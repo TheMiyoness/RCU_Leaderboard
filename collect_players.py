@@ -48,7 +48,9 @@ def fetch_and_store_players():
         player_id = str(player.get("id")) # Force string context matching our TEXT data type
         if player_id and player_id not in existing_player_ids:
             players_to_insert.append({
-                "id": player_id
+                "id": player_id,
+                "username": None, 
+                "current_clan_id": None
             })
 
     # Batch insert newly discovered players
