@@ -47,7 +47,8 @@ def fetch_and_store_clans():
         clan_id = clan.get("id")
         if clan_id and clan_id not in existing_clan_ids:
             clans_to_insert.append({
-                "id": clan_id
+                "id": clan_id,
+                "name": None
             })
 
     # Batch insert any newly discovered clans
