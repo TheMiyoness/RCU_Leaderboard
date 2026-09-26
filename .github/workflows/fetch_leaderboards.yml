@@ -1,0 +1,41 @@
+name: 5-Minute Game Data Collector
+
+on:
+  schedule:
+    # Trigger every 5 minutes (UTC)
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Allows you to manually trigger it from the GitHub UI for testing
+
+jobs:
+  collect-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone your repository files into the runner machine
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      # Step 2: Provision a clean Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      # Step 3: Install the required libraries for Supabase and API calls
+      - name: Install dependencies
+        run: |
+          pip install supabase requests
+
+      # Step 4: Run the Clan script with encrypted secrets injected
+      - name: Run Clan Data Collector
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python collect_clans.py
+
+      # Step 5: Run the Player script right after
+      - name: Run Player Data Collector
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python collect_players.py
